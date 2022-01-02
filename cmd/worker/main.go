@@ -1,14 +1,6 @@
 package main
 
-import (
-	// "fmt"
-	"context"
-	"encoding/json"
-	"log"
-	"time"
-
-	"gopkg.in/vansante/go-ffprobe.v2"
-
+import ( // "fmt"
 	// "os"
 	// "os/signal"
 	// "syscall"
@@ -74,20 +66,4 @@ import (
 func main() {
 	// getMetadata("https://vibesmediastorage.s3.amazonaws.com/uploads/61d05316d5d1d2000f61f2d0.mp3")
 	metadata.GetMetadata("https://vibesmediastorage.s3.amazonaws.com/uploads/61d05316d5d1d2000f61f2d0.mp3")
-}
-func getMetadata(url string) string {
-	ctx, cancelFn := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancelFn()
-
-	data, err := ffprobe.ProbeURL(ctx, url)
-	if err != nil {
-		log.Panicf("Error getting data: %v", err)
-	}
-
-	buf, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		log.Panicf("Error unmarshalling: %v", err)
-	}
-	log.Print(string(buf))
-	return string(buf)
 }
