@@ -1,0 +1,6 @@
+github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891 h1:13nv5f/LNJxNpvpYm/u0NqrlFebon342f9Xu9GpklKc=
+github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891/go.mod h1:ogQDLSOACsLPsIq0NpbtiifNZi2YOz0VTJ0kHRghqbM=
+github.com/wagslane/go-rabbitmq v0.7.0 h1:+hA/6oQbJdei2KfDprlDkaqy3fgzRp9IX0pIzICXwao=
+github.com/wagslane/go-rabbitmq v0.7.0/go.mod h1:31ioXpWK5FVuCp7XTYa+kRxxX+RqYoXMJFRC59u35aA=
+gopkg.in/vansante/go-ffprobe.v2 v2.0.3 h1:nmR7yLalb5p5UmXhXUYnrsIkbb8j7h2OYMDoLETCQ5U=
+gopkg.in/vansante/go-ffprobe.v2 v2.0.3/go.mod h1:qF0AlAjk7Nqzqf3y333Ly+KxN3cKF2JqA3JT5ZheUGE=

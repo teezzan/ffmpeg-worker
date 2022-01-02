@@ -3,3 +3,6 @@ build:
 
 run:
 	go run cmd/worker/main.go
+
+publish:
+	go run cmd/publisher/main.go
