@@ -9,11 +9,14 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/teezzan/ffmpeg-worker/pkg/metadata"
 	rabbitmq "github.com/wagslane/go-rabbitmq"
 )
 
 var consumerName = "example"
 var amqpUrl = os.Getenv("AMQPURL")
+
+// var queueName = os.Getenv("QUEUE_NAME")
 
 func main() {
 	consumer, err := rabbitmq.NewConsumer(
@@ -26,12 +29,12 @@ func main() {
 	err = consumer.StartConsuming(
 		func(d rabbitmq.Delivery) rabbitmq.Action {
 			log.Printf("consumed: %v", string(d.Body))
-			// metadata.GetMetadata("https://vibesmediastorage.s3.amazonaws.com/uploads/61d05316d5d1d2000f61f2d0.mp3")
+			metadata.GetMetadata("https://vibesmediastorage.s3.amazonaws.com/uploads/61d05316d5d1d2000f61f2d0.mp3")
 			return rabbitmq.Ack
 		},
-		"my_queue",
-		[]string{"routing_key", "routing_key_2"},
-		// rabbitmq.WithConsumeOptionsConcurrency(1),
+		"ffprobeQueue",
+		[]string{"testKey"},
+		// rabbitmq.WithConsumeOptionsConcurrency(5),
 		rabbitmq.WithConsumeOptionsQueueDurable,
 		rabbitmq.WithConsumeOptionsQuorum,
 		rabbitmq.WithConsumeOptionsBindingExchangeName("events"),

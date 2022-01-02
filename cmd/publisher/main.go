@@ -58,7 +58,7 @@ func main() {
 		case <-ticker.C:
 			err = publisher.Publish(
 				[]byte("hello, world"),
-				[]string{"routing_key"},
+				[]string{"testKey"},
 				rabbitmq.WithPublishOptionsContentType("application/json"),
 				rabbitmq.WithPublishOptionsMandatory,
 				rabbitmq.WithPublishOptionsPersistentDelivery,
