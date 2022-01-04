@@ -3,7 +3,7 @@
 var amqp = require('amqplib/callback_api');
 const { nanoid } = require('nanoid');
 
-amqp.connect('amqp://localhost', function(error0, connection) {
+amqp.connect('amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.cloudamqp.com/sztwqfjl', function(error0, connection) {
   if (error0) {
     throw error0;
   }
