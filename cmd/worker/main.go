@@ -11,7 +11,6 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	amqp "github.com/rabbitmq/amqp091-go"
 
-	// "github.com/teezzan/ffmpeg-worker/pkg/metadata"
 	"github.com/teezzan/ffmpeg-worker/pkg/metadata"
 	"github.com/teezzan/ffmpeg-worker/pkg/redis"
 	rabbitmq "github.com/wagslane/go-rabbitmq"
@@ -39,7 +38,6 @@ func main() {
 				return rabbitmq.Ack
 			} else {
 				fmt.Println("Failed! Requeue")
-
 				return rabbitmq.NackRequeue
 			}
 		},
