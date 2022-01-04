@@ -45,6 +45,7 @@ func main() {
 		[]string{"key"},
 		rabbitmq.WithConsumeOptionsQueueDurable,
 		rabbitmq.WithConsumeOptionsQuorum,
+		rabbitmq.WithConsumeOptionsConcurrency(5),
 		rabbitmq.WithConsumeOptionsBindingExchangeName("direct_xch"),
 		rabbitmq.WithConsumeOptionsBindingExchangeKind("direct"),
 		rabbitmq.WithConsumeOptionsBindingExchangeDurable,

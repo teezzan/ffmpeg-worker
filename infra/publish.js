@@ -3,11 +3,15 @@
 var amqp = require('amqplib/callback_api');
 const { nanoid } = require('nanoid');
 
-amqp.connect('amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.cloudamqp.com/sztwqfjl', function(error0, connection) {
+function getRandomArbitrary(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
+amqp.connect('amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.cloudamqp.com/sztwqfjl', function (error0, connection) {
   if (error0) {
     throw error0;
   }
-  connection.createChannel(function(error1, channel) {
+  connection.createChannel(function (error1, channel) {
     if (error1) {
       throw error1;
     }
@@ -17,16 +21,19 @@ amqp.connect('amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.
     channel.assertExchange(exchange, 'direct', {
       durable: true
     });
-    channel.publish(exchange, routing_key, Buffer.from(JSON.stringify({
-        url:"https://vibesmediastorage.s3.amazonaws.com/uploads/61d05316d5d1d2000f61f2d0.mp3",
+    setInterval(() => {
+
+      channel.publish(exchange, routing_key, Buffer.from(JSON.stringify({
+        url: `http://api.alquran.cloud/v1/ayah/${2}:${getRandomArbitrary(1, 283)}`,
         type: "metadata",
         uuid: nanoid()
-    })));
-    console.log(" [x] Sent %s: '%s'", routing_key, 'Ho world!');
+      })));
+      console.log(" [x] Sent ");
+    }, 2000);
   });
 
-  setTimeout(function() {
-    connection.close();
-    process.exit(0)
-  }, 500);
+  // setTimeout(function () {
+  //   connection.close();
+  //   process.exit(0)
+  // }, 500);
 });
