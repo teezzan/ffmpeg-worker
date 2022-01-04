@@ -10,18 +10,15 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	amqp "github.com/rabbitmq/amqp091-go"
+
+	// "github.com/teezzan/ffmpeg-worker/pkg/metadata"
 	"github.com/teezzan/ffmpeg-worker/pkg/metadata"
+	"github.com/teezzan/ffmpeg-worker/pkg/redis"
 	rabbitmq "github.com/wagslane/go-rabbitmq"
 )
 
 var consumerName = "example"
 var amqpUrl = "amqp://localhost" //os.Getenv("AMQPURL")
-
-type Payload struct {
-	Url  string
-	Type string
-	UUID string
-}
 
 // var queueName = os.Getenv("QUEUE_NAME")
 
@@ -35,10 +32,10 @@ func main() {
 	}
 	err = consumer.StartConsuming(
 		func(d rabbitmq.Delivery) rabbitmq.Action {
-			var payload Payload
+			var payload redis.Payload
 			json.Unmarshal(d.Body, &payload)
-			log.Print(string(payload.UUID))
-			metadata.GetMetadata(payload.Url)
+			result := metadata.GetMetadata(payload.Url)
+			redis.SaveResult(payload, result)
 			return rabbitmq.Ack
 		},
 		"queuwnn",
