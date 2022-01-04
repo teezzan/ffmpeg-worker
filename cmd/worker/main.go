@@ -18,9 +18,7 @@ import (
 )
 
 var consumerName = "example"
-var amqpUrl = "amqp://localhost" //os.Getenv("AMQPURL")
-
-// var queueName = os.Getenv("QUEUE_NAME")
+var amqpUrl = os.Getenv("AMQPURL")
 
 func main() {
 	consumer, err := rabbitmq.NewConsumer(
