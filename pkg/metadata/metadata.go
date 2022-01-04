@@ -22,6 +22,5 @@ func GetMetadata(url string) string {
 	if err != nil {
 		log.Panicf("Error unmarshalling: %v", err)
 	}
-	log.Print(string(buf))
 	return string(buf)
 }

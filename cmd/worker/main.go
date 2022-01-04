@@ -35,8 +35,15 @@ func main() {
 			var payload redis.Payload
 			json.Unmarshal(d.Body, &payload)
 			result := metadata.GetMetadata(payload.Url)
-			redis.SaveResult(payload, result)
-			return rabbitmq.Ack
+			success := redis.SaveResult(payload, result)
+			if success {
+				fmt.Println("Success")
+				return rabbitmq.Ack
+			} else {
+				fmt.Println("Failed! Requeue")
+
+				return rabbitmq.NackRequeue
+			}
 		},
 		"queuwnn",
 		[]string{"key"},
