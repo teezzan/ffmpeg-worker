@@ -3,6 +3,7 @@ module github.com/teezzan/ffmpeg-worker
 go 1.16
 
 require (
+	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891 // indirect
 	github.com/wagslane/go-rabbitmq v0.7.0 // indirect

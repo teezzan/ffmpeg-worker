@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -14,7 +15,13 @@ import (
 )
 
 var consumerName = "example"
-var amqpUrl = os.Getenv("AMQPURL")
+var amqpUrl = "amqp://localhost" //os.Getenv("AMQPURL")
+
+type Payload struct {
+	Url  string
+	Type string
+	UUID string
+}
 
 // var queueName = os.Getenv("QUEUE_NAME")
 
@@ -28,17 +35,18 @@ func main() {
 	}
 	err = consumer.StartConsuming(
 		func(d rabbitmq.Delivery) rabbitmq.Action {
-			log.Printf("consumed: %v", string(d.Body))
-			metadata.GetMetadata("https://vibesmediastorage.s3.amazonaws.com/uploads/61d05316d5d1d2000f61f2d0.mp3")
+			var payload Payload
+			json.Unmarshal(d.Body, &payload)
+			log.Print(string(payload.UUID))
+			metadata.GetMetadata(payload.Url)
 			return rabbitmq.Ack
 		},
-		"ffprobeQueue",
-		[]string{"testKey"},
-		// rabbitmq.WithConsumeOptionsConcurrency(5),
+		"queuwnn",
+		[]string{"key"},
 		rabbitmq.WithConsumeOptionsQueueDurable,
 		rabbitmq.WithConsumeOptionsQuorum,
-		rabbitmq.WithConsumeOptionsBindingExchangeName("events"),
-		rabbitmq.WithConsumeOptionsBindingExchangeKind("topic"),
+		rabbitmq.WithConsumeOptionsBindingExchangeName("direct_xch"),
+		rabbitmq.WithConsumeOptionsBindingExchangeKind("direct"),
 		rabbitmq.WithConsumeOptionsBindingExchangeDurable,
 		rabbitmq.WithConsumeOptionsConsumerName(consumerName),
 	)

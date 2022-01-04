@@ -12,7 +12,7 @@ import (
 	rabbitmq "github.com/wagslane/go-rabbitmq"
 )
 
-var amqpUrl = "amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.cloudamqp.com/sztwqfjl"
+var amqpUrl = os.Getenv("AMQPURL")
 
 func main() {
 	publisher, err := rabbitmq.NewPublisher(
