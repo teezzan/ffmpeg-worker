@@ -1,1 +1,1 @@
-worker: worker
+worker: /worker_bin
