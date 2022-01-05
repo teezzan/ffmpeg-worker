@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -32,6 +33,6 @@ func SaveResult(payload Payload, result string) bool {
 	resp.Result = result
 	data, _ := json.Marshal(resp)
 
-	err := rdb.Set(ctx, payload.UUID, data, 0).Err()
+	err := rdb.Set(ctx, payload.UUID, data, 1*time.Hour).Err()
 	return err == nil
 }

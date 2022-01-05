@@ -24,12 +24,19 @@ amqp.connect('amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.
     setInterval(() => {
 
       channel.publish(exchange, routing_key, Buffer.from(JSON.stringify({
-        url: `https://verse.mp3quran.net/arabic/sahl_yassin/64/00${2}${parseInt(getRandomArbitrary(100, 283))}.1mp3`,
+        url: `https://verse.mp3quran.net/arabic/sahl_yassin/64/00${2}${parseInt(getRandomArbitrary(100, 283))}.mp3`,
         type: "metadata",
         uuid: nanoid()
       })));
-      console.log(" [x] Sent ");
-    }, 2000);
+      console.log("Good [x] Sent ");
+
+      channel.publish(exchange, routing_key, Buffer.from(JSON.stringify({
+        url: `https://verse.mp3quran.net/arabic/sahl_yassin/64/00${2}${parseInt(getRandomArbitrary(100, 283))}x.mp3`,
+        type: "metadata",
+        uuid: nanoid()
+      })));
+      console.log("Bad [x] Sent ");
+    }, 1000);
   });
 
   // setTimeout(function () {
