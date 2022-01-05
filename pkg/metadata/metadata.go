@@ -15,7 +15,7 @@ func GetMetadata(url string) string {
 
 	data, err := ffprobe.ProbeURL(ctx, url)
 	if err != nil {
-		log.Panicf("Error getting data: %v", err)
+		return ""
 	}
 
 	buf, err := json.MarshalIndent(data, "", "  ")
