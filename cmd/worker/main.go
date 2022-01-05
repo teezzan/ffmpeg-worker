@@ -35,13 +35,15 @@ func main() {
 			if result != "" {
 				if redis.SaveResult(payload, result) {
 					fmt.Println("Success")
+					return rabbitmq.Ack
 				} else {
-					fmt.Println("Failed!")
+					fmt.Println("Failed to save!")
+					return rabbitmq.NackRequeue
 				}
-				return rabbitmq.Ack
 
 			} else {
-				return rabbitmq.Ack
+				fmt.Println("Failed to Convert!")
+				return rabbitmq.NackDiscard
 			}
 		},
 		"queuwnn",

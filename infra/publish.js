@@ -24,7 +24,7 @@ amqp.connect('amqps://sztwqfjl:la9uwaS03--T93hv0JuJsoiUgxxexMhw@rattlesnake.rmq.
     setInterval(() => {
 
       channel.publish(exchange, routing_key, Buffer.from(JSON.stringify({
-        url: `https://verse.mp3quran.net/arabic/sahl_yassin/64/00${2}${parseInt(getRandomArbitrary(100, 283))}.mp3`,
+        url: `https://verse.mp3quran.net/arabic/sahl_yassin/64/00${2}${parseInt(getRandomArbitrary(100, 283))}.1mp3`,
         type: "metadata",
         uuid: nanoid()
       })));
