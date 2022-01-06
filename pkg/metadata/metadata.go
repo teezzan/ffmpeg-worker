@@ -15,6 +15,7 @@ func GetMetadata(url string) string {
 
 	data, err := ffprobe.ProbeURL(ctx, url)
 	if err != nil {
+		log.Println(err)
 		return ""
 	}
 
