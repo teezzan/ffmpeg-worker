@@ -103,7 +103,7 @@ func enqueue(payload redis.Payload) bool {
 		rabbitmq.WithPublishOptionsContentType("application/json"),
 		rabbitmq.WithPublishOptionsMandatory,
 		rabbitmq.WithPublishOptionsPersistentDelivery,
-		rabbitmq.WithPublishOptionsExchange("events"),
+		rabbitmq.WithPublishOptionsExchange("direct_xch"),
 	)
 	if err != nil {
 		log.Println(err)
