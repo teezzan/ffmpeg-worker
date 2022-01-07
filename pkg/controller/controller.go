@@ -45,15 +45,17 @@ func GetMetaFromURL(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
-	var payload redis.Payload
-	payload.Type = body.Type
-	payload.Url = body.Url
 	id, _ := gonanoid.New()
-	payload.UUID = id
+
+	var payload = &redis.Payload{
+		Type: body.Type,
+		Url:  body.Url,
+		UUID: id,
+	}
 
 	if queueRequest {
 		fmt.Println("Queued")
-		result := enqueue(payload)
+		result := enqueue(*payload)
 		if result {
 			ctx.StatusCode(202)
 			ctx.JSON(iris.Map{
@@ -69,7 +71,7 @@ func GetMetaFromURL(ctx iris.Context) {
 			return
 		}
 	} else {
-		go process(payload)
+		go process(*payload)
 		ctx.StatusCode(202)
 		ctx.JSON(iris.Map{
 			"message": "processing",
