@@ -1,10 +1,14 @@
 package main
 
 import (
+	"os"
+
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/kataras/iris/v12"
 	"github.com/teezzan/ffmpeg-worker/pkg/controller"
 )
+
+var port = os.Getenv("PORT")
 
 func main() {
 	app := iris.New()
@@ -17,5 +21,5 @@ func main() {
 
 	app.Post("/convert", controller.GetMetaFromURL)
 
-	app.Listen(":8080")
+	app.Listen(":" + string(port))
 }

@@ -13,4 +13,4 @@ COPY . .
 RUN go build -o /server_bin cmd/server/main.go
 
 
-CMD [ "/worker_bin" ]
+CMD [ "/server_bin" ]
