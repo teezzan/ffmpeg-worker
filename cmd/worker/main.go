@@ -32,7 +32,7 @@ func main() {
 			var payload redis.Payload
 			json.Unmarshal(d.Body, &payload)
 			result := metadata.GetMetadata(payload.Url)
-			if result != "" {
+			if result != metadata.Dummy {
 				if redis.SaveResult(payload, result) {
 					fmt.Println("Success")
 					return rabbitmq.Ack

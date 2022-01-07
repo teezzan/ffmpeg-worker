@@ -7,18 +7,19 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"gopkg.in/vansante/go-ffprobe.v2"
 )
 
 type Payload struct {
-	Url  string
-	Type string
-	UUID string
+	Url  string `json:"url"`
+	Type string `json:"type"`
+	UUID string `json:"uuid"`
 }
 type Response struct {
-	Url    string
-	Type   string
-	UUID   string
-	Result string
+	Url    string             `json:"url"`
+	Type   string             `json:"type"`
+	UUID   string             `json:"uuid"`
+	Result *ffprobe.ProbeData `result:"uuid"`
 }
 
 var ctx = context.Background()
@@ -28,7 +29,7 @@ var rdb = redis.NewClient(&redis.Options{
 	DB:       0,
 })
 
-func SaveResult(payload Payload, result string) bool {
+func SaveResult(payload Payload, result *ffprobe.ProbeData) bool {
 	var resp Response
 	resp.Result = result
 	resp.Type = payload.Type

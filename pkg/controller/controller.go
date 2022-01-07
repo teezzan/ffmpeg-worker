@@ -83,7 +83,8 @@ func GetMetaFromURL(ctx iris.Context) {
 
 func process(payload redis.Payload) {
 	result := metadata.GetMetadata(payload.Url)
-	if result != "" {
+
+	if result != metadata.Dummy {
 		if redis.SaveResult(payload, result) {
 			fmt.Println("Success")
 		} else {
@@ -118,6 +119,7 @@ func GetResult(ctx iris.Context) {
 	ctx.JSON(iris.Map{
 		"message": "Success",
 		"uuid":    uuid,
-		"result":  result,
+		"error":   nil,
+		"data":    result,
 	})
 }
