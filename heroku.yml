@@ -1,5 +1,6 @@
 build:
   docker:
-    worker: Dockerfile
+    worker: Worker.Dockerfile
+    web: Web.Dockerfile
 run:
   worker: /worker_bin
