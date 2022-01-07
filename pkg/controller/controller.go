@@ -1,13 +1,17 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/kataras/iris/v12"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/teezzan/ffmpeg-worker/pkg/metadata"
 	"github.com/teezzan/ffmpeg-worker/pkg/redis"
+	rabbitmq "github.com/wagslane/go-rabbitmq"
 )
 
 type Body struct {
@@ -16,6 +20,21 @@ type Body struct {
 }
 
 var queueRequest = os.Getenv("QUEUE_REQUEST") == "true"
+var amqpUrl = os.Getenv("AMQPURL")
+
+var glob_publisher *rabbitmq.Publisher
+
+func init() {
+
+	publisher, init_err := rabbitmq.NewPublisher(
+		amqpUrl, amqp.Config{},
+		rabbitmq.WithPublisherOptionsLogging,
+	)
+	if init_err != nil {
+		log.Fatal(init_err)
+	}
+	glob_publisher = publisher
+}
 
 func GetMetaFromURL(ctx iris.Context) {
 	var body Body
@@ -26,19 +45,31 @@ func GetMetaFromURL(ctx iris.Context) {
 		ctx.WriteString(err.Error())
 		return
 	}
+	var payload redis.Payload
+	payload.Type = body.Type
+	payload.Url = body.Url
+	id, _ := gonanoid.New()
+	payload.UUID = id
+
 	if queueRequest {
 		fmt.Println("Queued")
-
+		result := enqueue(payload)
+		if result {
+			ctx.StatusCode(202)
+			ctx.JSON(iris.Map{
+				"message": "processing",
+				"uuid":    payload.UUID,
+			})
+			return
+		} else {
+			ctx.StatusCode(500)
+			ctx.JSON(iris.Map{
+				"message": "Error",
+			})
+			return
+		}
 	} else {
-		fmt.Println("Processing")
-
-		var payload redis.Payload
-		payload.Type = body.Type
-		payload.Url = body.Url
-		id, _ := gonanoid.New()
-		payload.UUID = id
 		go process(payload)
-		fmt.Println(payload)
 		ctx.StatusCode(202)
 		ctx.JSON(iris.Map{
 			"message": "processing",
@@ -47,6 +78,7 @@ func GetMetaFromURL(ctx iris.Context) {
 		return
 	}
 }
+
 func process(payload redis.Payload) {
 	result := metadata.GetMetadata(payload.Url)
 	if result != "" {
@@ -59,4 +91,22 @@ func process(payload redis.Payload) {
 	} else {
 		fmt.Println("Failed to Convert!")
 	}
+}
+func enqueue(payload redis.Payload) bool {
+	data, _ := json.Marshal(payload)
+
+	err := glob_publisher.Publish(
+		[]byte(data),
+		[]string{"testKey"},
+		rabbitmq.WithPublishOptionsContentType("application/json"),
+		rabbitmq.WithPublishOptionsMandatory,
+		rabbitmq.WithPublishOptionsPersistentDelivery,
+		rabbitmq.WithPublishOptionsExchange("events"),
+	)
+	if err != nil {
+		log.Println(err)
+		return true
+	}
+	return false
+	// err = glob_publisher.StopPublishing()
 }
