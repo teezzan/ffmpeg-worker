@@ -99,7 +99,7 @@ func enqueue(payload redis.Payload) bool {
 
 	err := glob_publisher.Publish(
 		[]byte(data),
-		[]string{"testKey"},
+		[]string{"key"},
 		rabbitmq.WithPublishOptionsContentType("application/json"),
 		rabbitmq.WithPublishOptionsMandatory,
 		rabbitmq.WithPublishOptionsPersistentDelivery,
@@ -107,8 +107,8 @@ func enqueue(payload redis.Payload) bool {
 	)
 	if err != nil {
 		log.Println(err)
-		return true
+		return false
 	}
-	return false
+	return true
 	// err = glob_publisher.StopPublishing()
 }
