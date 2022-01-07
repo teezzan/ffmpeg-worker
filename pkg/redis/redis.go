@@ -31,8 +31,27 @@ var rdb = redis.NewClient(&redis.Options{
 func SaveResult(payload Payload, result string) bool {
 	var resp Response
 	resp.Result = result
+	resp.Type = payload.Type
+	resp.UUID = payload.UUID
+	resp.Url = payload.Url
 	data, _ := json.Marshal(resp)
 
-	err := rdb.Set(ctx, payload.UUID, data, 1*time.Hour).Err()
+	err := rdb.Set(ctx, payload.UUID, data, 3*time.Hour).Err()
 	return err == nil
+}
+
+func FetchResult(uuid string) Response {
+	var resp Response
+
+	data, _ := rdb.Get(ctx, uuid).Result()
+
+	// if err != nil {
+	// 	return ""
+	// }
+
+	json.Unmarshal([]byte(data), &resp)
+
+	return resp
+	// data, _ := json.Marshal(resp)
+	// return err == nil
 }

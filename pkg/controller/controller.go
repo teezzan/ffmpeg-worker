@@ -110,5 +110,14 @@ func enqueue(payload redis.Payload) bool {
 		return false
 	}
 	return true
-	// err = glob_publisher.StopPublishing()
+}
+
+func GetResult(ctx iris.Context) {
+	uuid := ctx.Params().Get("uuid")
+	result := redis.FetchResult(uuid)
+	ctx.JSON(iris.Map{
+		"message": "Success",
+		"uuid":    uuid,
+		"result":  result,
+	})
 }

@@ -13,11 +13,7 @@ var port = os.Getenv("PORT")
 func main() {
 	app := iris.New()
 
-	app.Get("/ping", func(ctx iris.Context) {
-		ctx.JSON(iris.Map{
-			"message": "pong",
-		})
-	})
+	app.Get("/fetch/{uuid}", controller.GetResult)
 
 	app.Post("/convert", controller.GetMetaFromURL)
 
