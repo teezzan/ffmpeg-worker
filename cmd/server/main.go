@@ -15,6 +15,8 @@ func main() {
 
 	app.Get("/fetch/{uuid}", controller.GetResult)
 
+	app.Get("/total", controller.GetTotalSeconds)
+
 	app.Post("/convert", controller.GetMetaFromURL)
 
 	app.Listen(":" + string(port))

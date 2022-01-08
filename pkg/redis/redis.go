@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -20,7 +21,7 @@ type Response struct {
 	Type   string             `json:"type"`
 	UUID   string             `json:"uuid"`
 	Error  string             `json:"error"`
-	Result *ffprobe.ProbeData `result:"uuid"`
+	Result *ffprobe.ProbeData `json:"result"`
 }
 
 var ctx = context.Background()
@@ -29,6 +30,7 @@ var rdb = redis.NewClient(&redis.Options{
 	Password: os.Getenv("REDIS_PASSWORD"),
 	DB:       0,
 })
+var totalKeyName = "total"
 
 func SaveResult(payload Payload, result *ffprobe.ProbeData, error_message string) bool {
 	var resp Response
@@ -36,6 +38,8 @@ func SaveResult(payload Payload, result *ffprobe.ProbeData, error_message string
 		resp.Error = error_message
 	} else {
 		resp.Result = result
+		SetTotal(int(result.Format.DurationSeconds))
+
 	}
 	resp.Type = payload.Type
 	resp.UUID = payload.UUID
@@ -58,4 +62,27 @@ func FetchResult(uuid string) (Response, bool) {
 	json.Unmarshal([]byte(data), &resp)
 
 	return resp, true
+}
+
+func FetchTotalDuration() string {
+	data, err := rdb.Get(ctx, totalKeyName).Result()
+
+	if err != nil {
+		return "25000"
+	}
+
+	return data
+}
+
+func SetTotal(duration int) bool {
+	data, err := rdb.Get(ctx, totalKeyName).Result()
+	prev_duration := 0
+	if err == nil {
+		prev_duration, _ = strconv.Atoi(data)
+	}
+
+	new_duration := prev_duration + duration
+
+	err = rdb.Set(ctx, totalKeyName, strconv.Itoa(new_duration), redis.KeepTTL).Err()
+	return err == nil
 }

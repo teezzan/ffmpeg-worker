@@ -138,3 +138,10 @@ func GetResult(ctx iris.Context) {
 		})
 	}
 }
+func GetTotalSeconds(ctx iris.Context) {
+	ctx.JSON(iris.Map{
+		"message":        "Success",
+		"total_duration": redis.FetchTotalDuration(),
+	})
+
+}
