@@ -31,19 +31,15 @@ func main() {
 		func(d rabbitmq.Delivery) rabbitmq.Action {
 			var payload redis.Payload
 			json.Unmarshal(d.Body, &payload)
-			result := metadata.GetMetadata(payload.Url)
-			if result != metadata.Dummy {
-				if redis.SaveResult(payload, result) {
-					fmt.Println("Success")
-					return rabbitmq.Ack
-				} else {
-					fmt.Println("Failed to save!")
-					return rabbitmq.NackRequeue
-				}
+			result, error_message := metadata.GetMetadata(payload.Url)
 
+			if redis.SaveResult(payload, result, error_message) {
+				fmt.Println("Result Saved Successfully")
+				return rabbitmq.Ack
 			} else {
-				fmt.Println("Failed to Convert!")
-				return rabbitmq.NackDiscard
+				fmt.Println("Failed to save!")
+				return rabbitmq.NackRequeue
+
 			}
 		},
 		"queuwnn",

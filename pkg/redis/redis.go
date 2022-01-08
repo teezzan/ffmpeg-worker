@@ -19,6 +19,7 @@ type Response struct {
 	Url    string             `json:"url"`
 	Type   string             `json:"type"`
 	UUID   string             `json:"uuid"`
+	Error  string             `json:"error"`
 	Result *ffprobe.ProbeData `result:"uuid"`
 }
 
@@ -29,9 +30,13 @@ var rdb = redis.NewClient(&redis.Options{
 	DB:       0,
 })
 
-func SaveResult(payload Payload, result *ffprobe.ProbeData) bool {
+func SaveResult(payload Payload, result *ffprobe.ProbeData, error_message string) bool {
 	var resp Response
-	resp.Result = result
+	if error_message != "" {
+		resp.Error = error_message
+	} else {
+		resp.Result = result
+	}
 	resp.Type = payload.Type
 	resp.UUID = payload.UUID
 	resp.Url = payload.Url
@@ -41,18 +46,16 @@ func SaveResult(payload Payload, result *ffprobe.ProbeData) bool {
 	return err == nil
 }
 
-func FetchResult(uuid string) Response {
+func FetchResult(uuid string) (Response, bool) {
 	var resp Response
 
-	data, _ := rdb.Get(ctx, uuid).Result()
+	data, err := rdb.Get(ctx, uuid).Result()
 
-	// if err != nil {
-	// 	return ""
-	// }
+	if err != nil {
+		return resp, false
+	}
 
 	json.Unmarshal([]byte(data), &resp)
 
-	return resp
-	// data, _ := json.Marshal(resp)
-	// return err == nil
+	return resp, true
 }

@@ -82,18 +82,14 @@ func GetMetaFromURL(ctx iris.Context) {
 }
 
 func process(payload redis.Payload) {
-	result := metadata.GetMetadata(payload.Url)
+	result, error_message := metadata.GetMetadata(payload.Url)
 
-	if result != metadata.Dummy {
-		if redis.SaveResult(payload, result) {
-			fmt.Println("Success")
-		} else {
-			fmt.Println("Failed to save!")
-		}
-
+	if redis.SaveResult(payload, result, error_message) {
+		fmt.Println("Result Saved Successfully")
 	} else {
-		fmt.Println("Failed to Convert!")
+		fmt.Println("Failed to save!")
 	}
+
 }
 func enqueue(payload redis.Payload) bool {
 	data, _ := json.Marshal(payload)
@@ -115,11 +111,30 @@ func enqueue(payload redis.Payload) bool {
 
 func GetResult(ctx iris.Context) {
 	uuid := ctx.Params().Get("uuid")
-	result := redis.FetchResult(uuid)
-	ctx.JSON(iris.Map{
-		"message": "Success",
-		"uuid":    uuid,
-		"error":   nil,
-		"data":    result,
-	})
+	result, found := redis.FetchResult(uuid)
+	if found {
+		if result.Error != "" {
+			ctx.JSON(iris.Map{
+				"message": "Failed",
+				"uuid":    uuid,
+				"error":   result.Error,
+				"data":    result,
+			})
+		} else {
+			ctx.JSON(iris.Map{
+				"message": "Success",
+				"error":   nil,
+				"data":    result,
+			})
+		}
+
+	} else {
+		ctx.StatusCode(404)
+		ctx.JSON(iris.Map{
+			"message": "Not Found",
+			"uuid":    uuid,
+			"error":   "uuid not found",
+			"data":    nil,
+		})
+	}
 }
