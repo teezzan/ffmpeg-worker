@@ -37,19 +37,10 @@ func init() {
 }
 
 func GetMetaFromURL(ctx iris.Context) {
-	var body Body
-	err := ctx.ReadJSON(&body)
-
-	if err != nil {
-		ctx.StatusCode(iris.StatusBadRequest)
-		ctx.WriteString(err.Error())
-		return
-	}
 	id, _ := gonanoid.New()
-
 	var payload = &redis.Payload{
-		Type: body.Type,
-		Url:  body.Url,
+		Type: ctx.Values().GetString("type"),
+		Url:  ctx.Values().GetString("url"),
 		UUID: id,
 	}
 

@@ -46,8 +46,10 @@ func SaveResult(payload Payload, result *ffprobe.ProbeData, error_message string
 	resp.Url = payload.Url
 	data, _ := json.Marshal(resp)
 
-	err := rdb.Set(ctx, payload.UUID, data, 3*time.Hour).Err()
+	err := rdb.Set(ctx, payload.UUID, data, 5*time.Hour).Err()
+	rdb.Set(ctx, payload.Url, payload.UUID, 5*time.Hour).Err()
 	return err == nil
+
 }
 
 func FetchResult(uuid string) (Response, bool) {
@@ -85,4 +87,21 @@ func SetTotal(duration int) bool {
 
 	err = rdb.Set(ctx, totalKeyName, strconv.Itoa(new_duration), redis.KeepTTL).Err()
 	return err == nil
+}
+func FetchResultFromCache(url string) (Response, bool) {
+	var resp Response
+
+	data, err := rdb.Get(ctx, url).Result()
+
+	if err != nil {
+		return resp, false
+	}
+	data, err = rdb.Get(ctx, data).Result()
+
+	if err != nil {
+		return resp, false
+	}
+	json.Unmarshal([]byte(data), &resp)
+
+	return resp, true
 }
