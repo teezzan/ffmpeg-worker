@@ -47,7 +47,9 @@ func SaveResult(payload Payload, result *ffprobe.ProbeData, error_message string
 	data, _ := json.Marshal(resp)
 
 	err := rdb.Set(ctx, payload.UUID, data, 5*time.Hour).Err()
-	rdb.Set(ctx, payload.Url, payload.UUID, 5*time.Hour).Err()
+	if error_message == "" {
+		rdb.Set(ctx, payload.Url, payload.UUID, 5*time.Hour).Err()
+	}
 	return err == nil
 
 }
