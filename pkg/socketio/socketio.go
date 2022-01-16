@@ -1,4 +1,3 @@
-// Package main runs a go-socket.io based websocket server with Iris web server.
 package socketio
 
 import (
@@ -13,20 +12,13 @@ func init() {
 	Server = socketio.NewServer(nil)
 	Server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-		log.Println("connected:", s.ID())
+		id := s.ID()
+		log.Println("connected:", id)
 		return nil
 	})
 
-	Server.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
+	Server.OnEvent("/", "status", func(s socketio.Conn, msg string) {
 		log.Println("notice:", msg)
-		s.Emit("reply", "have "+msg)
-	})
-
-	Server.OnEvent("/", "bye", func(s socketio.Conn) string {
-		last := s.Context().(string)
-		s.Emit("bye", last)
-		s.Close()
-		return last
 	})
 
 	Server.OnError("/", func(s socketio.Conn, e error) {
@@ -44,3 +36,17 @@ func init() {
 	}()
 
 }
+
+func EmitCompleted(uuid string, UserID string) {
+	Server.ForEach("/", UserID, func(conn socketio.Conn) {
+		log.Println("id ", UserID)
+		conn.Emit("completed", uuid)
+	})
+}
+
+// func IsOnline(UserID string) bool{
+
+// 	Server.ForEach("/", UserID, func(conn socketio.Conn) {
+// 		return true
+// 	})
+// }

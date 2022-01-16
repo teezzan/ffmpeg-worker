@@ -11,6 +11,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/teezzan/ffmpeg-worker/pkg/metadata"
 	"github.com/teezzan/ffmpeg-worker/pkg/redis"
+	"github.com/teezzan/ffmpeg-worker/pkg/socketio"
 	rabbitmq "github.com/wagslane/go-rabbitmq"
 )
 
@@ -43,6 +44,7 @@ func GetMetaFromURL(ctx iris.Context) {
 		Url:  ctx.Values().GetString("url"),
 		UUID: id,
 	}
+	socketID := ctx.Values().GetString("socket_id")
 
 	if queueRequest {
 		fmt.Println("Queued")
@@ -62,23 +64,27 @@ func GetMetaFromURL(ctx iris.Context) {
 			return
 		}
 	} else {
-		go process(*payload)
 		ctx.StatusCode(202)
 		ctx.JSON(iris.Map{
 			"message": "processing",
 			"uuid":    payload.UUID,
 		})
+		go process(*payload, socketID)
 		return
 	}
 }
 
-func process(payload redis.Payload) {
+func process(payload redis.Payload, socketID string) {
 	result, error_message := metadata.GetMetadata(payload.Url)
 
 	if redis.SaveResult(payload, result, error_message) {
 		fmt.Println("Result Saved Successfully")
+
 	} else {
 		fmt.Println("Failed to save!")
+	}
+	if socketID != "" {
+		socketio.EmitCompleted(payload.UUID, socketID)
 	}
 
 }

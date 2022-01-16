@@ -16,8 +16,9 @@ import (
 var port = os.Getenv("PORT")
 
 type Body struct {
-	Url  string `json:"url"`
-	Type string `json:"type"`
+	Url      string `json:"url"`
+	Type     string `json:"type"`
+	SocketID string `json:"socket_id"`
 }
 
 func main() {
@@ -60,6 +61,7 @@ func LookupCache(ctx iris.Context) {
 	}
 	ctx.Values().Set("url", body.Url)
 	ctx.Values().Set("type", body.Type)
+	ctx.Values().Set("socket_id", body.SocketID)
 	result, found := redis.FetchResultFromCache(body.Url)
 	if found {
 		if result.Error != "" {
