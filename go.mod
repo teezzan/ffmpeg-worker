@@ -9,14 +9,15 @@ require (
 	github.com/etcd-io/bbolt v1.3.3 // indirect
 	github.com/gavv/httpexpect v2.0.0+incompatible // indirect
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
-	github.com/gomodule/redigo v1.7.1-0.20190724094224-574c33c3df38 // indirect
-	github.com/hashicorp/go-version v1.2.0 // indirect
+	github.com/googollee/go-socket.io v1.6.1
 	github.com/iris-contrib/blackfriday v2.0.0+incompatible // indirect
 	github.com/iris-contrib/middleware/cors v0.0.0-20211207164801-081c558a02bb
 	github.com/iris-contrib/middleware/jwt v0.0.0-20211207164801-081c558a02bb // indirect
 	github.com/iris-contrib/pongo2 v0.0.1 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/kataras/iris v0.0.2
 	github.com/kataras/iris/v12 v12.2.0-alpha5
+	github.com/kataras/neffos v0.0.18
 	github.com/matoous/go-nanoid/v2 v2.0.0 // indirect
 	github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891 // indirect
 	github.com/ryanuber/columnize v2.1.0+incompatible // indirect

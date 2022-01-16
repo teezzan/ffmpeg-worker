@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
-	cors "github.com/iris-contrib/middleware/cors"
+	"github.com/iris-contrib/middleware/cors"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/kataras/iris/v12"
 	"github.com/teezzan/ffmpeg-worker/pkg/controller"
 	"github.com/teezzan/ffmpeg-worker/pkg/redis"
+	socketio "github.com/teezzan/ffmpeg-worker/pkg/socketio"
 )
 
 var port = os.Getenv("PORT")
@@ -28,13 +30,23 @@ func main() {
 
 	app.UseRouter(crs)
 
+	app.HandleMany("GET POST", "/socket.io/{any:path}", iris.FromStd(socketio.Server))
+
 	app.Get("/fetch/{uuid}", controller.GetResult)
 
 	app.Get("/total", controller.GetTotalSeconds)
 
 	app.Post("/convert", LookupCache, controller.GetMetaFromURL)
 
-	app.Listen(":" + string(port))
+	defer socketio.Server.Close()
+
+	if err := app.Run(
+		iris.Addr(":"+port),
+		iris.WithoutPathCorrection,
+		iris.WithoutServerError(iris.ErrServerClosed),
+	); err != nil {
+		log.Fatal("failed run app: ", err)
+	}
 }
 
 func LookupCache(ctx iris.Context) {
