@@ -1,0 +1,77 @@
+swagger: "2.0"
+info:
+  description: "This is a simple server for getting metadata of mediafile"
+  version: "1.0.0"
+  title: "FFprobe as a service"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "metaworker.herokuapp.com"
+basePath: "/"
+tags:
+- name: "FFProbe"
+  description: "Get your metadata easily."
+  externalDocs:
+    description: "Find out more"
+    url: "https://github.com/teezzan/worker"
+schemes:
+- "https"
+- "http"
+paths:
+  /convert:
+    post:
+      tags:
+      - "convert"
+      summary: "Get the metadata of the file at the end of the URL"
+      description: ""
+      operationId: "convert"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Object containing url and some other data"
+        required: true
+        schema:
+          $ref: "#/definitions/InputPayload"
+      responses:
+        "202":
+          description: "Queued Successfully"
+        "200":
+          description: "Success"
+        "405":
+          description: "Invalid input"
+  /fetch/{uuid}:
+    get:
+      tags:
+      - "fetch"
+      summary: "Find result of process by UUID"
+      description: "Returns a single result"
+      operationId: "fetch"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "uuid"
+        in: "path"
+        description: "ID of process returned during convert process"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Result not found"
+definitions:
+    InputPayload:
+      type: "object"
+      required:
+      - "url"
+      properties:
+        url:
+          type: "string"
+          example: "https://pagalnew.com/mp3-songs/bollywood-mp3-songs/humko-humise-chura-lo-mohabbatein-128-kbps-sound.mp4"
+        type:
+          type: "string"
+          example: "meta"

@@ -11,7 +11,7 @@ There are little ways of getting the metadata of media files without resorting t
 
 
 ## Screenshots/Demo
-
+ ![Arch](./docs/arch.jpg)
 
 ## Built With
 
@@ -48,7 +48,10 @@ make run
 
 
 ## API Reference/Documentation
+There are two simple endpoints. They are as shown in the image.
 
+ ![Arch](./docs/doc.png)
+ A complete openAPI schema is found at `docs/swagger.yaml`
 
 ## Contributing
 
