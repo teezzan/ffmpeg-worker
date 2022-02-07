@@ -22,10 +22,10 @@ There are little ways of getting the metadata of media files without resorting t
 
 ## Features
 
-[x] Small footprint.
-[x] Fast.
-[x] can switch between local and a remote worker instance.
-[x] Open-source
+[X] Small footprint.
+[X] Fast.
+[X] Can switch between local and a remote worker instance.
+[X] Open-source
 
 
 ## Quicker Start
@@ -62,8 +62,8 @@ Issues and pull requests are welcome at [cdEnv](https://github.com/teezzan/cdEnv
 
 ## Acknowledgments
 
-**[TemiTayo Ogunsusi](https://www.linkedin.com/in/temitayo-ogunsusi)** for building [Metaworka](https://metaworka.herokuapp.com/)
-**[Abdullah AbdulFatah](https://www.linkedin.com/in/abdullah-abdulfatah-125189209/)** for building [Durator](https://durator.web.app/)
+**[TemiTayo Ogunsusi](https://www.linkedin.com/in/temitayo-ogunsusi)** for building [Metaworka](https://metaworka.herokuapp.com/),
+**[Abdullah AbdulFatah](https://www.linkedin.com/in/abdullah-abdulfatah-125189209/)** for building [Durator](https://durator.web.app/),
 **[Meg Gutshall](https://github.com/meg-gutshall/)** for her README template. Helped a lot.
 
 ## License
