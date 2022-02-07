@@ -1,5 +1,3 @@
-# Project Title
-
 ## FFProbe as a Service
 
 ### The What
