@@ -22,10 +22,10 @@ There are little ways of getting the metadata of media files without resorting t
 
 ## Features
 
-[X] Small footprint.
-[X] Fast.
-[X] Can switch between local and a remote worker instance.
-[X] Open-source
+- [X] Small footprint.
+- [X] Fast.
+- [X] Can switch between local and a remote worker instance.
+- [X] Open-source
 
 
 ## Quicker Start
